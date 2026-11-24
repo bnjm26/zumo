@@ -1,0 +1,374 @@
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111711">
+<title>ZUMO — Игровая платформа</title>
+<style>
+:root{--bg:#101510;--panel:#192119;--panel2:#202b20;--line:#30402e;--lime:#c5f36a;--muted:#9cab98;--white:#f4f7ef;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.shell{max-width:1180px;margin:auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 22px}
+.logo{font-size:27px;font-weight:950;letter-spacing:1px;color:var(--lime)}.logo span{color:white}
+.pill{border:1px solid var(--line);border-radius:30px;padding:8px 12px;color:var(--muted);font-size:12px}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}
+nav,.card{background:var(--panel);border:1px solid var(--line);border-radius:18px}
+nav{padding:12px;height:max-content;position:sticky;top:12px}
+.navbtn{display:flex;width:100%;align-items:center;gap:11px;text-align:left;background:transparent;border:0;color:var(--muted);padding:12px;border-radius:11px;margin:2px 0}
+.navbtn.active,.navbtn:hover{background:var(--panel2);color:var(--lime)}
+main{min-width:0}.page{display:none}.page.active{display:block}
+h1{font-size:clamp(27px,5vw,42px);margin:4px 0 8px;letter-spacing:-1px}h2{font-size:20px;margin:0 0 14px}
+.sub{color:var(--muted);margin:0 0 22px}.hero{padding:25px;background:linear-gradient(125deg,#253723,#172119 70%);border:1px solid #435c35;border-radius:20px;margin-bottom:17px}
+.hero h1{color:var(--lime)}.hero p{color:#d1dec9;max-width:550px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px}.stat small{color:var(--muted)}.stat strong{display:block;font-size:27px;margin-top:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card{padding:18px;margin-bottom:14px}
+.action{background:var(--lime);color:#172015;border:0;border-radius:11px;padding:11px 15px;font-weight:800}
+.secondary{background:var(--panel2);color:var(--white);border:1px solid var(--line);border-radius:11px;padding:10px 13px}
+.danger{background:#482626;color:#ffdada;border:1px solid #784040;border-radius:10px;padding:9px 12px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.muted{color:var(--muted)}
+.item{padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#2a3924;color:var(--lime);font-size:11px;font-weight:800}
+input,textarea,select{width:100%;background:#111a12;color:var(--white);border:1px solid var(--line);border-radius:10px;padding:12px;margin:6px 0 12px;outline:none}
+label{font-size:13px;color:var(--muted)}.empty{padding:25px;text-align:center;color:var(--muted)}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line)}th{font-size:12px;color:var(--muted)}
+footer{color:#72806e;text-align:center;padding:22px;font-size:12px}
+.mobilebar{display:none}
+button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:720px){.shell{padding:12px}.layout{display:block}nav{display:none}.mobilebar{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;position:sticky;bottom:8px;z-index:5;background:#1a241b;border:1px solid var(--line);padding:7px;border-radius:16px;margin-top:12px;box-shadow:0 8px 30px #0008}.mobilebar button{border:0;background:transparent;color:var(--muted);font-size:11px;padding:8px 2px;border-radius:9px}.mobilebar button.active{background:#2b3a25;color:var(--lime)}.stats{grid-template-columns:repeat(3,1fr);gap:7px}.stat{padding:11px}.stat strong{font-size:21px}.grid2{grid-template-columns:1fr}.hero{padding:19px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="logo">🍋 ZUMO<span>.</span></div><div class="row"><span class="pill">● ПЕРВАЯ ВЕРСИЯ</span><span class="pill" id="headerName">Гость</span></div></header>
+<div class="layout">
+<nav id="sideNav">
+<button class="navbtn active" data-page="home">🏠 Главная</button>
+<button class="navbtn" data-page="events">⚔️ Соревнования</button>
+<button class="navbtn" data-page="games">🎮 Игры</button>
+<button class="navbtn" data-page="rating">🏆 Рейтинг</button>
+<button class="navbtn" data-page="profile">👤 Профиль</button>
+<button class="navbtn" data-page="shop">🛍️ Магазин</button>
+<button class="navbtn" data-page="admin">🛠️ Админ-панель</button>
+</nav>
+<main>
+<section class="page active" id="home">
+<div class="hero"><span class="tag">ТВОЯ ИГРОВАЯ ПЛАТФОРМА</span><h1>Играй. Соревнуйся.<br>Побеждай.</h1><p>Выполняй задания, отправляй результаты, поднимайся в рейтинге и собирай награды вместе с сообществом ZUMO.</p><button class="action" onclick="showPage('events')">Найти соревнование →</button></div>
+<div class="stats"><div class="stat"><small>Твой ELO</small><strong id="homeElo">100</strong></div><div class="stat"><small>Монеты</small><strong id="homeCoins">100</strong></div><div class="stat"><small>Победы</small><strong id="homeWins">0</strong></div></div>
+<div class="grid2"><div class="card"><h2>⚔️ Активные соревнования</h2><div id="homeEvents" class="muted">Пока нет соревнований.</div><button class="secondary" onclick="showPage('events')">Все соревнования</button></div><div class="card"><h2>🏆 Твой прогресс</h2><p class="muted">Каждая победа приближает тебя к вершине рейтинга.</p><div class="row"><span>Поражения</span><b id="homeLosses">0</b></div><div class="row"><span>Титул</span><b>Новичок</b></div></div></div>
+</section>
+<section class="page" id="games"><h1>Игры</h1><p class="sub">Играй, собирай ZumoCoin и улучшай свой профиль.</p>
+<div class="card" style="text-align:center;background:linear-gradient(145deg,#253723,#172119)">
+<span class="tag">GAME 01 · ZUMO CLICKER</span>
+<h2 style="font-size:25px;color:var(--lime);margin:12px 0 4px">ZUMO CLICKER</h2>
+<p class="muted">Кликай по монете за 30 секунд и собирай ZMC.</p>
+<div style="font-size:14px;color:var(--muted);margin-top:18px">ТВОЙ КОШЕЛЁК</div>
+<div style="font-size:36px;font-weight:950;color:var(--lime)" id="zmcWallet">0 ZMC</div>
+<div class="stats" style="grid-template-columns:repeat(2,1fr);text-align:left">
+<div class="stat"><small>Очки раунда</small><strong id="clickScore">0</strong></div>
+<div class="stat"><small>Время</small><strong id="clickTime">30 сек</strong></div>
+</div>
+<div id="zmcCoin" role="button" tabindex="0" aria-label="Кликнуть по монете" onclick="clickZmc()" style="width:165px;height:165px;border-radius:50%;margin:18px auto;background:radial-gradient(circle at 35% 30%,#efffc1,#c5f36a 48%,#659b2e);border:8px solid #83b947;box-shadow:0 0 35px #9be34b55;display:flex;align-items:center;justify-content:center;color:#203018;font-size:34px;font-weight:950;user-select:none;cursor:pointer">ZMC</div>
+<button class="action" id="clickStart" onclick="startZmcRound()">Начать раунд</button>
+<p class="muted" id="clickMessage" style="font-size:13px;margin-top:14px">Нажми «Начать раунд», затем кликай по монете!</p>
+<div class="grid2" style="text-align:left;margin-top:18px">
+<div class="stat"><small>Лучший результат</small><strong id="clickBest">0</strong></div>
+<div class="stat"><small>Всего кликов</small><strong id="clickTotal">0</strong></div>
+</div>
+</div>
+<div class="card"><h2>Что такое ZumoCoin?</h2><p class="muted">ZMC — шуточная внутриигровая валюта ZUMO. Она не является криптовалютой, не имеет денежной стоимости, её нельзя купить за реальные деньги или вывести. В будущем её можно будет тратить на игровые улучшения и оформление.</p></div>
+</section>
+<section class="page" id="events"><h1>Соревнования</h1><p class="sub">Выбирай испытание и отправляй свой результат.</p><div id="eventList"></div></section>
+<section class="page" id="rating"><h1>Таблица лидеров</h1><p class="sub">Соревнуйся и поднимайся выше.</p><div class="card"><table><thead><tr><th>#</th><th>Игрок</th><th>ELO</th><th>Победы</th></tr></thead><tbody id="leaderRows"></tbody></table></div></section>
+<section class="page" id="profile"><h1>Мой профиль</h1><p class="sub">Твоя статистика и достижения.</p><div class="card"><label>Имя игрока</label><input id="playerName" maxlength="20" placeholder="Например, ZumoPlayer"><button class="action" onclick="saveName()">Сохранить имя</button><div class="stats"><div class="stat"><small>ELO</small><strong id="profileElo">100</strong></div><div class="stat"><small>Монеты</small><strong id="profileCoins">100</strong></div><div class="stat"><small>Победы</small><strong id="profileWins">0</strong></div></div><div class="row item"><span>Поражения</span><b id="profileLosses">0</b></div><div class="row item"><span>Титул</span><b>Новичок</b></div><p class="muted">Пока это локальный профиль на данном устройстве.</p></div></section>
+<section class="page" id="shop"><h1>Магазин</h1><p class="sub">Покупай оформление за игровые монеты.</p><div id="shopItems"></div></section>
+<section class="page" id="admin"><h1>Админ-панель</h1><p class="sub">Демо-режим: управление доступно локально и не защищено паролем. Не используй для реальных наград.</p><div class="card"><h2>Создать соревнование</h2><label>Название</label><input id="newTitle" placeholder="Например, Недельный челлендж"><label>Описание задания</label><textarea id="newDesc" rows="3" placeholder="Опиши правила и формат результата"></textarea><label>Награда в монетах</label><input id="newReward" type="number" min="0" value="50"><button class="action" onclick="createEvent()">Опубликовать в демо</button></div><div class="card"><h2>Результаты игроков</h2><div id="submissions"><p class="muted">Пока нет отправленных результатов.</p></div></div></section>
+</main></div>
+<div class="mobilebar" id="mobileNav">
+<button class="active" data-page="home">🏠<br>Главная</button><button data-page="events">⚔️<br>Сорев.</button><button data-page="games">🎮<br>Игры</button><button data-page="rating">🏆<br>Рейтинг</button><button data-page="profile">👤<br>Профиль</button>
+</div>
+<footer>ZUMO © 2026 · Первая демо-версия · Данные хранятся только в этом браузере</footer>
+</div>
+<script>
+'use strict';
+
+const KEY = 'zumo_demo_v1';
+let state;
+
+try {
+  state = JSON.parse(localStorage.getItem(KEY) || 'null');
+} catch (error) {
+  state = null;
+}
+
+if (!state || typeof state !== 'object') {
+  state = {name:'Игрок',elo:100,coins:100,wins:0,losses:0,events:[],submissions:[],owned:[]};
+}
+
+state.name = String(state.name || 'Игрок');
+state.elo = Number(state.elo || 100);
+state.coins = Number(state.coins || 100);
+state.wins = Number(state.wins || 0);
+state.losses = Number(state.losses || 0);
+state.events = Array.isArray(state.events) ? state.events : [];
+state.submissions = Array.isArray(state.submissions) ? state.submissions : [];
+state.owned = Array.isArray(state.owned) ? state.owned : [];
+state.zmc = Number(state.zmc || 0);
+state.zmcBest = Number(state.zmcBest || 0);
+state.zmcTotal = Number(state.zmcTotal || 0);
+
+const catalog = [
+  {id:'lime',name:'Лаймовый профиль',price:40,desc:'Яркий лаймовый стиль'},
+  {id:'elite',name:'Титул «Элита»',price:120,desc:'Особый титул профиля'},
+  {id:'spark',name:'Значок «Искра»',price:70,desc:'Первый коллекционный значок'}
+];
+
+let zmcScore = 0;
+let zmcTime = 30;
+let zmcActive = false;
+let zmcTimer = null;
+
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+  render();
+}
+
+function renderZmc() {
+  const ids = {
+    zmcWallet: state.zmc + ' ZMC',
+    clickScore: zmcScore,
+    clickTime: zmcTime + ' сек',
+    clickBest: state.zmcBest,
+    clickTotal: state.zmcTotal
+  };
+  Object.entries(ids).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  });
+  const button = document.getElementById('clickStart');
+  if (button) button.disabled = zmcActive;
+}
+
+function startZmcRound() {
+  if (zmcActive) return;
+  zmcScore = 0;
+  zmcTime = 30;
+  zmcActive = true;
+  document.getElementById('clickMessage').textContent = 'Раунд начался — кликай!';
+  renderZmc();
+  zmcTimer = setInterval(() => {
+    zmcTime--;
+    renderZmc();
+    if (zmcTime <= 0) finishZmcRound();
+  }, 1000);
+}
+
+function clickZmc() {
+  if (!zmcActive) return;
+  zmcScore++;
+  renderZmc();
+}
+
+function finishZmcRound() {
+  if (!zmcActive) return;
+  clearInterval(zmcTimer);
+  zmcActive = false;
+  state.zmc += zmcScore;
+  state.zmcTotal += zmcScore;
+  state.zmcBest = Math.max(state.zmcBest, zmcScore);
+  localStorage.setItem(KEY, JSON.stringify(state));
+  document.getElementById('clickMessage').textContent = 'Раунд завершён! Ты заработал ' + zmcScore + ' ZMC.';
+  renderZmc();
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.toggle('active', page.id === id);
+  });
+  document.querySelectorAll('[data-page]').forEach(button => {
+    button.classList.toggle('active', button.dataset.page === id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.querySelectorAll('[data-page]').forEach(button => {
+  button.addEventListener('click', () => showPage(button.dataset.page));
+});
+
+function saveName() {
+  const input = document.getElementById('playerName');
+  const name = input.value.trim();
+  if (!name) {
+    alert('Введи имя игрока.');
+    return;
+  }
+  state.name = name;
+  save();
+  alert('Имя сохранено!');
+}
+
+function createEvent() {
+  const title = document.getElementById('newTitle').value.trim();
+  const desc = document.getElementById('newDesc').value.trim();
+  const reward = Math.max(0, Number(document.getElementById('newReward').value) || 0);
+  if (!title || !desc) {
+    alert('Заполни название и описание.');
+    return;
+  }
+  state.events.push({id:Date.now(),title,desc,reward,joined:false});
+  document.getElementById('newTitle').value = '';
+  document.getElementById('newDesc').value = '';
+  save();
+  alert('Соревнование добавлено в демо-версию.');
+}
+
+function joinEvent(id) {
+  const event = state.events.find(item => item.id === id);
+  if (event) {
+    event.joined = true;
+    save();
+    alert('Ты записан! После выполнения задания отправь результат.');
+  }
+}
+
+function submitResult(id) {
+  const event = state.events.find(item => item.id === id);
+  if (!event) return;
+  const result = prompt('Опиши свой результат для администратора:');
+  if (result && result.trim()) {
+    state.submissions.push({
+      id:Date.now(),
+      event:event.title,
+      player:state.name,
+      result:result.trim(),
+      reward:event.reward,
+      done:false
+    });
+    save();
+    alert('Результат сохранён в этом браузере. Для реальной отправки нужна общая база данных.');
+  }
+}
+
+function buy(id) {
+  const product = catalog.find(item => item.id === id);
+  if (!product || state.owned.includes(id)) return;
+  if (state.coins < product.price) {
+    alert('Недостаточно монет.');
+    return;
+  }
+  state.coins -= product.price;
+  state.owned.push(id);
+  save();
+  alert('Покупка оформлена в демо!');
+}
+
+function approve(id, win) {
+  const submission = state.submissions.find(item => item.id === id);
+  if (!submission || submission.done) return;
+  submission.done = true;
+  if (win) {
+    state.elo += 5;
+    state.wins++;
+    state.coins += submission.reward;
+  } else {
+    state.elo = Math.max(0, state.elo - 8);
+    state.losses++;
+  }
+  save();
+}
+
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[char]));
+}
+
+function render() {
+  document.getElementById('headerName').textContent = state.name;
+
+  ['homeElo','profileElo'].forEach(id => {
+    document.getElementById(id).textContent = state.elo;
+  });
+  ['homeCoins','profileCoins'].forEach(id => {
+    document.getElementById(id).textContent = state.coins;
+  });
+  ['homeWins','profileWins'].forEach(id => {
+    document.getElementById(id).textContent = state.wins;
+  });
+  ['homeLosses','profileLosses'].forEach(id => {
+    document.getElementById(id).textContent = state.losses;
+  });
+
+  document.getElementById('playerName').value = state.name;
+
+  const events = state.events;
+  document.getElementById('eventList').innerHTML = events.length
+    ? events.map(event => `
+      <div class="card">
+        <div class="row">
+          <span class="tag">НАГРАДА: ${event.reward} 🪙</span>
+          <span class="muted">${event.joined ? 'УЧАСТВУЕШЬ' : 'ОТКРЫТО'}</span>
+        </div>
+        <h2 style="margin-top:12px">${esc(event.title)}</h2>
+        <p class="muted">${esc(event.desc)}</p>
+        ${event.joined
+          ? `<button class="action" onclick="submitResult(${Number(event.id)})">Отправить результат</button>`
+          : `<button class="action" onclick="joinEvent(${Number(event.id)})">Участвовать</button>`}
+      </div>
+    `).join('')
+    : '<div class="card empty">Пока соревнований нет. Загляни позже!</div>';
+
+  document.getElementById('homeEvents').innerHTML = events.length
+    ? `<b>${esc(events[0].title)}</b><p class="muted">${esc(events[0].desc)}</p>`
+    : 'Пока нет соревнований.';
+
+  const rows = [
+    {name:state.name,elo:state.elo,wins:state.wins},
+    {name:'ZumoBot',elo:850,wins:12},
+    {name:'LimeFox',elo:620,wins:8},
+    {name:'GreenRush',elo:430,wins:5}
+  ].sort((a,b) => b.elo - a.elo);
+
+  document.getElementById('leaderRows').innerHTML = rows.map((player,index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${esc(player.name)} ${player.name === state.name ? '<span class="tag">ТЫ</span>' : ''}</td>
+      <td><b>${player.elo}</b></td>
+      <td>${player.wins}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('shopItems').innerHTML = catalog.map(product => `
+    <div class="card row">
+      <div>
+        <b>${product.name}</b>
+        <div class="muted">${product.desc}</div>
+        <span class="tag">${product.price} 🪙</span>
+      </div>
+      <button class="secondary" ${state.owned.includes(product.id) ? 'disabled' : ''}
+        onclick="buy('${product.id}')">
+        ${state.owned.includes(product.id) ? 'Куплено' : 'Купить'}
+      </button>
+    </div>
+  `).join('');
+
+  document.getElementById('submissions').innerHTML = state.submissions.length
+    ? state.submissions.map(submission => `
+      <div class="item">
+        <b>${esc(submission.player)} · ${esc(submission.event)}</b>
+        <p class="muted">${esc(submission.result)}</p>
+        ${submission.done
+          ? '<span class="tag">ПРОВЕРЕНО</span>'
+          : `<button class="action" onclick="approve(${Number(submission.id)},true)">Победа</button>
+             <button class="danger" onclick="approve(${Number(submission.id)},false)">Поражение</button>`}
+      </div>
+    `).join('')
+    : '<p class="muted">Пока нет отправленных результатов.</p>';
+}
+
+render();
+renderZmc();
+</script>
+</body>
+</html>
